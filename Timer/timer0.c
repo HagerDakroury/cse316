@@ -12,13 +12,13 @@ void timer0_oneshot_init(){
 
 /*
 delay in sec
-mode: 0-> one-shot 2->periodic
+mode: 1-> one-shot 2->periodic
 */
 
 void timer0_set(int delay, int mode){
     timer0_oneshot_init();
     TIMER0_TAILR_R=16000*1000*delay-1; //loadimg the delay value
-    TIMER0_CTL_R|=0x01;                //enabling timer0
+    TIMER0_CTL_R|=mode;                //enabling timer0
 
 }
 
