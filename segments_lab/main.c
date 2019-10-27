@@ -7,13 +7,21 @@
 
 
 void init(){
+    SYSCTL_RCGCGPIO_R |= (SYSCTL_RCGCGPIO_R5|SYSCTL_RCGCGPIO_R0);
+    GPIO_PORTF_LOCK_R |=  GPIO_LOCK_KEY;
+    GPIO_PORTF_CR_R |= 1;
+    GPIO_PORTF_DEN_R |= 0x11;  // enabling PORT F FIRST 5 PINS 
+    GPIO_PORTF_PUR_R |= (SW1 | SW2);
+    GPIO_PORTF_DIR_R &= ~0x11;
 
+    GPIO_PORTA_DEN_R |=0Xff;
+    GPIO_PORTA_DIR_R |=0xff;
 }
 
 //TODO change the port
 void dataconfig(int number){
-    GPIO_PORTF_DATA_R=0x0;
-    GPIO_PORTF_DATA_R=numbers[number];
+    GPIO_PORTA_DATA_R=0x0;
+    GPIO_PORTA_DATA_R=numbers[number];
     
 }
 
@@ -103,6 +111,10 @@ void main(){
                 counter=0;
             dataconfig(counter);
             
+        timer0_set(1,1); //set timer0 A to one sec in one-shot mode
+        while(!timeout());
+        timer0_reset();
+            
         }
 
         else if(!(GPIO_PORTF_DATA_R&sw2)){
@@ -110,17 +122,22 @@ void main(){
           if(counter==-1)
                 counter=15;
           dataconfig(counter);
+          
+        timer0_set(1,1); //set timer0 A to one sec in one-shot mode
+        while(!timeout());
+        timer0_reset();
    
         }
 
         else if (!((GPIO_PORTF_DATA_R & SW2) | (GPIO_PORTF_DATA_R & SW2)) ){
             counter=0;
             dataconfig(counter);
-        }
-
+            
         timer0_set(1,1); //set timer0 A to one sec in one-shot mode
         while(!timeout());
         timer0_reset();
+        }
+
     }
 }
 
