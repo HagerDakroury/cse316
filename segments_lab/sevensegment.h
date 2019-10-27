@@ -11,7 +11,7 @@
 #define SEG_G   1U<<7
 
 
-#define ZERO  ~(SEG_A | SEG_B | SEG_C | SEG_D | SEG_F)
+#define ZERO  ~(SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F)
 #define ONE   ~(SEG_B | SEG_C)
 #define TWO   ~(SEG_A | SEG_B | SEG_D | SEG_E | SEG_G)
 #define THREE ~(SEG_A | SEG_B | SEG_C | SEG_D | SEG_G)
