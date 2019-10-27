@@ -1,0 +1,86 @@
+#include "tm4c123gh6pm.h"
+#define DARK (0U)
+#define RED (1U<<1)
+#define BLUE (1U<<2)
+#define GREEN (1U<<3)
+#define YELLOW (1U<<1) | (1U<<3)
+#define SKYBLUE (1U<<2) | (1U<<3)
+#define PINK (1U<<1) | (1U<<2)
+#define WHITE (1U<<1) | (1U<<2) |(1U<<3)
+#define sw1 (1U<<4)
+#define sw2 (1)
+
+int mapred[8]={0,1,0,0,1,0,1,1};
+int mapblue[8]={0,0,1,0,0,1,1,1};
+int mapgreen[8]={0,0,0,1,1,1,0,1};
+
+void SYSTICK_INIT() {
+    NVIC_ST_CTRL_R = 0x5;
+    NVIC_ST_RELOAD_R = 0x800000;
+}
+
+void PORTF_INIT() {
+    SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R5;
+    GPIO_PORTF_LOCK_R |=  GPIO_LOCK_KEY;
+    GPIO_PORTF_CR_R |= 1;
+    GPIO_PORTF_DEN_R |= 0x1f;  // enabling PORT F FIRST 5 PINS 
+    GPIO_PORTF_DIR_R |= 0x0e;  
+    GPIO_PORTF_PUR_R |= (sw1 | sw2);
+    GPIO_PORTF_DIR_R &= ~0x11;
+    GPIO_PORTF_DATA_R &= ~(RED | GREEN | BLUE);
+}
+void dataconfig(int value, int color){
+    if(value){
+                GPIO_PORTF_DATA_R|= color;
+            
+            }
+    else
+    {
+         GPIO_PORTF_DATA_R&=~(color);
+    }
+}
+void Colors(){
+
+    int counter=0;
+    while(1){
+        if (!(GPIO_PORTF_DATA_R&sw1) && !(GPIO_PORTF_DATA_R&sw2)){
+            counter = 7;
+            dataconfig(mapred[counter],RED);
+            dataconfig(mapblue[counter],BLUE);
+            dataconfig(mapgreen[counter],GREEN);
+            SYSTICK_INIT();
+            while(! (NVIC_ST_CTRL_R & NVIC_ST_CTRL_COUNT)){}
+        }
+        else if(!(GPIO_PORTF_DATA_R&sw1)){
+            counter++;
+            if(counter == 8)
+                counter =0;
+            
+            dataconfig(mapred[counter],RED);
+            dataconfig(mapblue[counter],BLUE);
+            dataconfig(mapgreen[counter],GREEN);
+            SYSTICK_INIT();
+            while(! (NVIC_ST_CTRL_R & NVIC_ST_CTRL_COUNT)){}
+        //counter  increment
+        //delay
+        }
+
+        else if(!(GPIO_PORTF_DATA_R&sw2)){
+            (counter--);
+            if(counter == -1)
+                counter =7;
+            dataconfig(mapred[counter],RED);
+            dataconfig(mapblue[counter],BLUE);
+            dataconfig(mapgreen[counter],GREEN);
+            SYSTICK_INIT();
+            while(! (NVIC_ST_CTRL_R & NVIC_ST_CTRL_COUNT)){}
+            //delay
+        }
+    }
+}
+int main (){
+    PORTF_INIT();
+    Colors();
+    return 0;
+} 
+
