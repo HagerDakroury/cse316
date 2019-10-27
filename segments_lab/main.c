@@ -13,11 +13,11 @@ void init(){
 //TODO change the port
 void dataconfig(int number){
     GPIO_PORTF_DATA_R=0x0;
-    GPIO_PORTF_DATA_R|=numbers[number];
+    GPIO_PORTF_DATA_R=numbers[number];
     
 }
 
-void main(){
+/*void main(){
     int counter=0;
 
     while(1){
@@ -87,9 +87,10 @@ void main(){
     }
 
 }
+*/
 
 
-/*
+
 //the smart thing to do
 void main(){
 
@@ -122,6 +123,6 @@ void main(){
         timer0_reset();
     }
 }
-*/
+
 
 
