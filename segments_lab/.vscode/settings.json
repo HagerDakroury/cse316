@@ -1,0 +1,14 @@
+{
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "files.associations": {
+        "time.h": "c",
+        "tm4c123gh6pm.h": "c",
+        "sysinit.h": "c",
+        "timer0.h": "c"
+    }
+}

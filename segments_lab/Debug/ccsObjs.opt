@@ -1,0 +1,1 @@
+"./tm4c123gh6pm_startup_ccs.obj" "./src/fsm/statemachine.obj" "./src/main.obj" "./src/sysinit/sysinit.obj" "./src/timer/timer0.obj" "../tm4c123gh6pm.cmd" -llibc.a 
