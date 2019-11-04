@@ -1,11 +1,11 @@
 #include "sysinit.h"
-#include "./timer/timer0.h"
+#include "src/timer/timer0.h"
 
 void sys_init(){
 
     //ENABLING CLOCK AND DELAY
-    SYSCTL_RCGCGPIO_R |= (SYSCTL_RCGCGPIO_R1 | SYSCTL_RCGCGPIO_R5);
-    delay(300);
+    SYSCTL_RCGCGPIO_R |= (SYSCTL_RCGCGPIO_R1 | SYSCTL_RCGCGPIO_R5| SYSCTL_RCGCGPIO_R4);
+    delaym(300);
 
     //PORT F CONFIG
     GPIO_PORTF_LOCK_R |=  GPIO_LOCK_KEY;
@@ -19,6 +19,11 @@ void sys_init(){
     //PORT B CONFIG
     GPIO_PORTB_DEN_R |= 0xff;
     GPIO_PORTB_DIR_R |= 0xff;
+
+    //PORT E CONFIG
+     GPIO_PORTB_DEN_R |= 0xe;
+     GPIO_PORTB_DIR_R |= 0xe;
+
 }
 
 void sys_start(){

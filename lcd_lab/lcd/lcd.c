@@ -1,5 +1,59 @@
-#include "sysinit/sysinit.h"
-#include "timer/timer0.h"
+#include "src/sysinit/sysinit.h"
+#include "src/timer/timer0.h"
+#include "lcd.h"
+
+void LCD_start(){
+    delaym(20); /* initialization sequence */// Wait >15 ms after power is applied
+
+    LCD_command(0x30);
+    // command 0x30 = Wake up
+
+    delaym(5);
+    // must wait 5ms, busy flag not available
+
+    LCD_command(0x30);
+    // command 0x30 = Wake up #2
+
+    delayu(100);
+    // must wait 100us, busy flag not available
+
+    LCD_command(0x30);
+    // command 0x30 = Wake up #3
+
+    delayu(100);
+    // must wait 100us, busy flag not available
+
+    // Prepare LCD Operation and Function
+
+    LCD_command(0x30);
+
+    //LCD_command(0x38); /* set 8-bit data, 2-line, 5x7 font */
+
+    LCD_command(0x08); /* move cursor right */
+
+    LCD_command(0x01);
+
+    LCD_command(0x7);
+
+    LCD_command(0b00011000);
+
+    LCD_command(0b00001011);
+
+}
+
+void LCD_reset(){
+
+    LCD_command(0x1);
+    // display clear DL 1 N 0 F 0
+    LCD_command(0b00110000);
+    //FUNCTION SET
+
+
+    LCD_command(0x8);
+    // display on\off b 0 c 0 d 0
+    LCD_command(0x6);
+    // entry mode set LD 1 S 0
+}
 void LCD_command(unsigned char command)
 
 {
@@ -12,19 +66,19 @@ LCD_DATA_DATA = command;
 LCD_CTRL_DATA = EN;
 /* pulse E */
 
-delayUs(1);
+delayu(1);
 /* Enable pulse Width */
 
 LCD_CTRL_DATA = 0;
 
 if (command < 4)
 
-delayMs(2);
+delaym(2);
 /* command 1 and 2 needs up to 1.64ms */
 
 else
 
-delayUs(40); /* all others 40 us */
+delayu(40); /* all others 40 us */
 
 }
 
@@ -38,11 +92,11 @@ LCD_DATA_DATA = data;
 
 LCD_CTRL_DATA = EN | RS; /* pulse E */
 
-delayUs(1);
+delayu(1);
 
 LCD_CTRL_DATA = 0;
 
-delayUs(40);
+delayu(40);
 }
 
 

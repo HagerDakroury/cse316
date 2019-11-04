@@ -13,9 +13,16 @@ delay in sec
 mode: 1-> one-shot 2->periodic
 */
 
-void timer0_set(int delay, int mode){
+void timer0_set_m(int delay, int mode){
     timer0_oneshot_init();
     TIMER0_TAILR_R=16000*delay-1; //loadimg the delay value
+    TIMER0_CTL_R|=mode;                //enabling timer0
+
+}
+
+void timer0_set_u(int delay, int mode){
+    timer0_oneshot_init();
+    TIMER0_TAILR_R=16*delay-1; //loadimg the delay value
     TIMER0_CTL_R|=mode;                //enabling timer0
 
 }
@@ -31,8 +38,14 @@ int timeout(){
     return 0;
 }
 
-void delay(int time){
-    timer0_set(time,1); //set timer0 A to one ssec in one-shot mode
+void delaym(int time){
+    timer0_set_m(time,1); //set timer0 A to one ssec in one-shot mode
+    while(!timeout());
+    timer0_reset();
+}
+
+void delayu(int time){
+    timer0_set_u(time,1); //set timer0 A to one ssec in one-shot mode
     while(!timeout());
     timer0_reset();
 }

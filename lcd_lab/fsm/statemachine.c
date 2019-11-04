@@ -1,7 +1,7 @@
 #include "statemachine.h"
-#include "tm4c123gh6pm.h"
-#include "../sevensegment/sevensegment.h"
-#include "../timer/timer0.h"
+#include "src/lcd/lcd.h"
+#include "src/tm4c123gh6pm.h"
+#include "src/timer/timer0.h"
 
 int counter = 0;
 
@@ -17,29 +17,29 @@ void update(){
     if (counter == -1)
         counter = 15;
 
-    GPIO_PORTB_DATA_R = numbers[counter];
 }
 
 void run(){
-    int input;
+    LCD_reset();
     while(1){
-        input = capture_input();
+
+       /* input = capture_input();
         switch (input) {
            case INCREMENT:
                 counter++;
                 update();
-                delay(500);
+                delaym(500);
                 break;
             case DECREMENT:
                 counter--;
                 update();
-                delay(500);
+                delaym(500);
                 break;
             case RESET:
                 counter = 10;
                 update();
-                delay(500);
+                delaym(500);
                 break;
-        }
+        }*/
     }
 }
