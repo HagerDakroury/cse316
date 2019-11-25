@@ -7,6 +7,7 @@
 #define SW1 (1U<<4)
 #define SW2 (1U<<0)
 
+
 int capture_input();
 void run();
 void update();

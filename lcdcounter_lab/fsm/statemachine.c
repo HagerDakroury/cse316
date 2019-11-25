@@ -3,6 +3,7 @@
 #include "src/tm4c123gh6pm.h"
 #include "src/timer/timer0.h"
 
+ char* count[10]={{"0"},{"1"},{"2"},{"3"},{"4"},{"5"},{"6"},{"7"},{"8"},{"9"}};
 int counter = 0;
 
 int capture_input(){
@@ -12,34 +13,22 @@ int capture_input(){
 }
 
 void update(){
-    if (counter == 16)
+    if (counter == 10)
         counter = 0;
     if (counter == -1)
-        counter = 15;
+        counter = 9;
 
 }
 
 void run(){
-    LCD_reset();
-    while(1){
+    LCD_start();
+        while(1){
+            systick_delay(1);
+            update();
+            LCD_start();
 
-       /* input = capture_input();
-        switch (input) {
-           case INCREMENT:
-                counter++;
-                update();
-                delaym(500);
-                break;
-            case DECREMENT:
-                counter--;
-                update();
-                delaym(500);
-                break;
-            case RESET:
-                counter = 10;
-                update();
-                delaym(500);
-                break;
-        }*/
+            write_lcd(count[counter],1);
+            counter--;
+
     }
 }

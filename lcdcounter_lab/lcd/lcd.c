@@ -2,6 +2,20 @@
 #include "src/timer/timer0.h"
 #include "lcd.h"
 
+
+void write_lcd(unsigned char* data, short length){
+    int i;
+    for(i = 0; i<length;i++){
+        LCD_data(data[i]);
+        delaym(1);
+    }
+    }
+
+
+
+
+
+
 void LCD_start(){
     delaym(20); /* initialization sequence */// Wait >15 ms after power is applied
 
@@ -25,19 +39,15 @@ void LCD_start(){
 
     // Prepare LCD Operation and Function
 
-    LCD_command(0x30);
+    LCD_command(0x38); /* set 8-bit data, 2-line, 5x7 font */
 
-    //LCD_command(0x38); /* set 8-bit data, 2-line, 5x7 font */
+    LCD_command(0x06); /* move cursor right */
 
-    LCD_command(0x08); /* move cursor right */
+    LCD_command(0x01); /* clear screen, move cursor to home */
 
-    LCD_command(0x01);
+    LCD_command(0x0F); /* turn on display, cursor blinking */
 
-    LCD_command(0x7);
 
-    LCD_command(0b00011000);
-
-    LCD_command(0b00001011);
 
 }
 

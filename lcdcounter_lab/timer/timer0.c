@@ -1,11 +1,34 @@
 #include "timer0.h"
+#include "../tm4c123gh6pm.h"
+
+void systick_init(int time){
+   NVIC_ST_CTRL_R = 0x0;
+   NVIC_ST_CURRENT_R |= 0x0;
+   NVIC_ST_RELOAD_R = time;
+   NVIC_ST_CTRL_R = 0x5;
+
+}
+
+void systick_delay(int seconds) {
+    int reload= 16000000-1;
+
+
+    systick_init(reload);
+
+    int i;
+    for(i=0;i<seconds ;i++){
+     while(!(NVIC_ST_CTRL_R & 0x10000));
+    }
+
+
+}
 
 void timer0_oneshot_init(){
     SYSCTL_RCGCTIMER_R|=0x01;  //enabling the sys clock for timer 0
 
     TIMER0_CTL_R=0x0;          //disabling timer
     TIMER0_CFG_R= 0x0;         //32-bit configuration
-    TIMER0_TAMR_R=0x01;       //one shot mode 
+    TIMER0_TAMR_R=0x01;       //one shot mode
 }
 
 /*
