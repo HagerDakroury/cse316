@@ -38,7 +38,7 @@ mode: 1-> one-shot 2->periodic
 
 void timer0_set_m(int delay, int mode){
     timer0_oneshot_init();
-    TIMER0_TAILR_R=16000*delay-1; //loadimg the delay value
+    TIMER0_TAILR_R=16000*delay-1; //loading the delay value
     TIMER0_CTL_R|=mode;                //enabling timer0
 
 }
