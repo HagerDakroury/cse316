@@ -10,11 +10,10 @@ void sys_init(){
     //PORT F CONFIG
     GPIO_PORTF_LOCK_R |=  GPIO_LOCK_KEY;
     GPIO_PORTF_CR_R |= 1;
-    GPIO_PORTF_DEN_R |= 0x11;
+    GPIO_PORTF_DEN_R |= 0x13;
     GPIO_PORTF_PUR_R |= (SW1 | SW2);
     GPIO_PORTF_DIR_R &= ~0x11;
-    GPIO_PORTF_DIR_R |= 0b10;
-    GPIO_PORTF_DATA_R  |= 0x2;
+    GPIO_PORTF_DIR_R |= 0x2;
 
     //PORT B CONFIG FOR LCD DATA
     GPIO_PORTB_DEN_R |= 0xff;

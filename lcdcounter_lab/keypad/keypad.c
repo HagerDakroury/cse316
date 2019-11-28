@@ -20,10 +20,12 @@ int capture_input(){
         if ( (~(GPIO_PORTE_DATA_R & 0xf)) & C0 ){
             col = 0;
             row = get_row(col);
+            delaym(40);
             return keypad_map[row][col];
         }  if ( (~(GPIO_PORTE_DATA_R & 0xf)) & C1 ){
             col = 1;
             row = get_row(col);
+            delaym(40);
             return keypad_map[row][col];
         }  if ( (~(GPIO_PORTE_DATA_R & 0xf)) & C2 ){
             col = 2;
@@ -32,6 +34,8 @@ int capture_input(){
         }  if ( (~(GPIO_PORTE_DATA_R & 0xf)) & C3 ){
             col = 3;
             row = get_row(col);
+            delaym(40);
+
             return keypad_map[row][col];
 
         }

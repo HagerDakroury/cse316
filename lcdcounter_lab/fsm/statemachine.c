@@ -5,8 +5,9 @@
 #include "src/keypad/keypad.h"
 
 char count[10]={'0','1','2','3','4','5','6','7','8','9'};
-int counter=0;
-//1->counting 0->receiving input
+
+//0->receiving input 1->initial display
+// 2->actively counting 3->idle  4->counting done
 int counting=0;
 
 int capture_switch(){
@@ -15,90 +16,127 @@ int capture_switch(){
     return sw1 << 1 | sw2;
 }
 
-void update(){
-    if (counter == 10)
-        counter = 0;
-    if (counter == -1)
-        counter = 9;
-
-}
 
 void run(){
     LCD_start();
     int digits[4]={0,0,0,0};
-   // int digitCount=0;
+    int digitCount=0;
     int seconds;
-    int minutes;
-    int temp;
-    int input;
+    int milliseconds=0;
+    int input=0;
     while(1){
         input = capture_switch();
+
+        //polling on the switch value
         switch (input) {
 
         //START COUNTING
            case COUNT:
                 counting=1;
                 break;
-        //STOP COUNTING
+        //STOP COUNTING and reset
             case ABORT:
                 counting=0;
+                digitCount=0;
+                LCD_start();
                 break;
         }
 
+        //prepare the timer value+display initial msg
+        //next state is the actual counting
         if(counting==1){
-            counting=2;
-            seconds=digits[3]+digits[2]*10;
-            minutes=digits[1]+digits[0]*10;
-            LCD_start();
-            LCD_data(count[digits[0]]);
-            LCD_data(count[digits[1]]);
-            LCD_data(':');
-            LCD_data(count[digits[2]]);
-            LCD_data(count[digits[3]]);
 
-            //display the count value
-            //display the 4 digits
-            //display the resolution thing
+            counting=2;
+            seconds=digits[0]+digits[1]*10+digits[2]*100+digits[3]*1000;
+            LCD_start();
+            LCD_data(count[digits[3]]);
+            LCD_data(count[digits[2]]);
+            LCD_data(count[digits[1]]);
+            LCD_data(count[digits[0]]);
+            LCD_data('.');
+            LCD_data(count[milliseconds]);
+            LCD_data('0');
+            delaym(100);
+
         }
+
+        //counting state
+        //counts until it reaches 0 or the abort switch is pressed
         else if (counting==2){
-             if(seconds==59){
-                 seconds=0;
-                 minutes++;
+            //counter is done
+             if(seconds==0 && milliseconds==0){
+                 counting=4;
+
              }
-             else{
-                 seconds++;
+
+             if(milliseconds==0){
+                 milliseconds=9;
+                 seconds--;
              }
+             milliseconds--;
+
+
+             //the counter display, refreshes every .1 second
              LCD_start();
-             LCD_data(count[(minutes/10)%10]);
-             LCD_data(count[minutes%10]);
-             LCD_data(':');
+             LCD_data(count[(seconds/1000)%10]);
+             LCD_data(count[(seconds/100)%10]);
              LCD_data(count[(seconds/10)%10]);
              LCD_data(count[seconds%10]);
+             LCD_data('.');
+             LCD_data(count[milliseconds]);
+             LCD_data('0');
 
-             digits[3]=seconds%10;
-             temp=seconds/10;
-             digits[2]=temp%10;
+             delaym(100);
 
-             digits[1]=minutes%10;
-             temp=minutes/10;
-             digits[0]=temp%10;
-
-             delaym(1000);
-
-                     }
+           }
 
 
-
-            //display the count value
-            //display the 4 digits
-            //display the resolution thing
-
+        //accept up to 4 digits from the keypad
+        //initial state of the program
+        else if(counting==0){
 
 
-        else{
+            if(digitCount==3)
+                counting=3;
 
-            /*digits[digitCount]=capture_input();
-                        digitCount++;*/
+           input=capture_input();
+           delaym(100);
+
+            //accept only the numbers-> no letters
+            if(input<10){
+
+                digits[3-digitCount]=input;
+
+                LCD_data(count[digits[3-digitCount]]);
+                digitCount++;
+            }
+
+
+        }
+
+        //final state
+        //when the counter reaches 0 the end msg is displayed and the RED LED blinks for 3 sec
+        else if(counting==4){
+            char end[7]={'T','H','E',' ','E','N','D'};
+            LCD_start();
+            int i=0;
+            for(i=0;i<7;i++){
+                LCD_data(end[i]);
+                delaym(1);
+                    }
+
+            for(i=0;i<5;i++){
+                GPIO_PORTF_DATA_R  |= 0x2;
+                delaym(1000);
+                GPIO_PORTF_DATA_R  &=~0x2;
+                delaym(1000);
+        }
+            counting=3;
+
+
+        }
+
+
 
         }
 }
@@ -108,5 +146,5 @@ void run(){
 
 
 
-    }
+
 
