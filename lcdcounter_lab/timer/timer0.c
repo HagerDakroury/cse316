@@ -9,16 +9,13 @@ void systick_init(int time){
 
 }
 
-void systick_delay(int seconds) {
-    int reload= 16000000-1;
-
+void systick_delaym(int seconds) {
+    int reload= 16000*seconds-1;
 
     systick_init(reload);
 
-    int i;
-    for(i=0;i<seconds ;i++){
      while(!(NVIC_ST_CTRL_R & 0x10000));
-    }
+
 
 
 }

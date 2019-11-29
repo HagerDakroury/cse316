@@ -54,9 +54,9 @@ void run(){
             LCD_data(count[digits[1]]);
             LCD_data(count[digits[0]]);
             LCD_data('.');
-            LCD_data(count[milliseconds]);
-            LCD_data('0');
-            delaym(100);
+            LCD_data(count[(milliseconds/10)%10]);
+            LCD_data(count[milliseconds%10]);
+            systick_delaym(10);
 
         }
 
@@ -70,23 +70,23 @@ void run(){
              }
 
              if(milliseconds==0){
-                 milliseconds=9;
+                 milliseconds=99;
                  seconds--;
              }
              milliseconds--;
 
 
              //the counter display, refreshes every .1 second
-             LCD_start();
+             LCD_command(0x01); /* clear screen, move cursor to home */
              LCD_data(count[(seconds/1000)%10]);
              LCD_data(count[(seconds/100)%10]);
              LCD_data(count[(seconds/10)%10]);
              LCD_data(count[seconds%10]);
              LCD_data('.');
-             LCD_data(count[milliseconds]);
-             LCD_data('0');
+             LCD_data(count[(milliseconds/10)%10]);
+             LCD_data(count[milliseconds%10]);
 
-             delaym(100);
+             systick_delaym(10);
 
            }
 
@@ -100,7 +100,7 @@ void run(){
                 counting=3;
 
            input=capture_input();
-           delaym(100);
+           systick_delaym(100);
 
             //accept only the numbers-> no letters
             if(input<10){
@@ -122,14 +122,14 @@ void run(){
             int i=0;
             for(i=0;i<7;i++){
                 LCD_data(end[i]);
-                delaym(1);
+                systick_delaym(1);
                     }
 
             for(i=0;i<5;i++){
                 GPIO_PORTF_DATA_R  |= 0x2;
-                delaym(1000);
+                systick_delaym(1000);
                 GPIO_PORTF_DATA_R  &=~0x2;
-                delaym(1000);
+                systick_delaym(1000);
         }
             counting=3;
 
